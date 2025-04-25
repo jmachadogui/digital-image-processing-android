@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var imageView: ImageView
     private lateinit var editionImageUri: Uri
     private lateinit var imageProcessor: ImageProcessor
+    private lateinit var imageFileManager: ImageFileManager
 
     private var editImageUri: Uri? = null
     private val PERMISSION_REQUEST_CODE = 100
@@ -48,7 +49,7 @@ class MainActivity : ComponentActivity() {
             val data: Intent? = result.data
             val imageUri: Uri? = data?.data
             imageUri?.let { uri ->
-                val workingCopyUri = imageProcessor.createOrGetEditCopy(uri)
+                val workingCopyUri = imageFileManager.createOrGetEditCopy(uri)
                 workingCopyUri?.let {copyUri ->
                     editImageUri = copyUri
                     imageView.setImageURI(copyUri)
@@ -61,7 +62,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        imageProcessor = ImageProcessor(contentResolver)
+        imageProcessor = ImageProcessor()
+        imageFileManager = ImageFileManager(contentResolver)
 
         btnSelectImage = findViewById(R.id.btnSelectImage)
         btnResetImage = findViewById(R.id.btnResetImage)
@@ -79,7 +81,7 @@ class MainActivity : ComponentActivity() {
 
     private fun applyFilter(filterFunction: (Bitmap) -> Bitmap) {
         editImageUri?.let { uri ->
-            if(imageProcessor.applyFilterToEditCopy(uri, filterFunction)) {
+            if(imageFileManager.applyFilterToEditCopy(uri, filterFunction)) {
                 imageView.setImageURI(null)
                 imageView.setImageURI(uri)
             }
