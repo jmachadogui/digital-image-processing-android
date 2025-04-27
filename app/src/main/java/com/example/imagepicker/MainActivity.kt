@@ -36,10 +36,10 @@ class MainActivity : ComponentActivity() {
     private lateinit var btnSelectImage: Button
     private lateinit var btnResetImage: Button
     private lateinit var imageView: ImageView
-    private lateinit var editionImageUri: Uri
     private lateinit var imageProcessor: ImageProcessor
     private lateinit var imageFileManager: ImageFileManager
 
+    private var sourceImageUri: Uri? = null
     private var editImageUri: Uri? = null
     private val PERMISSION_REQUEST_CODE = 100
 
@@ -49,6 +49,7 @@ class MainActivity : ComponentActivity() {
             val data: Intent? = result.data
             val imageUri: Uri? = data?.data
             imageUri?.let { uri ->
+                sourceImageUri = uri
                 val workingCopyUri = imageFileManager.createOrGetEditCopy(uri)
                 workingCopyUri?.let {copyUri ->
                     editImageUri = copyUri
@@ -73,7 +74,8 @@ class MainActivity : ComponentActivity() {
             requestPermission()
         }
         btnResetImage.setOnClickListener {
-            
+            imageFileManager.resetImage(editImageUri)
+            imageView.setImageURI(sourceImageUri)
         }
 
         addButtonsInGrid()
@@ -94,46 +96,6 @@ class MainActivity : ComponentActivity() {
         val name: String,
         val filterFunction: (Bitmap) -> Bitmap
     )
-
-    private fun addButtons() {
-        val buttonContainer = LinearLayout(this)
-        buttonContainer.orientation = LinearLayout.VERTICAL
-        buttonContainer.layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        )
-
-        val buttonParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        buttonParams.setMargins(16, 8, 16, 8)
-
-        val filters = listOf(
-            FilterOption("+ Scale", {bitmap -> ScaleTransformation(1.1).apply(bitmap)}),
-            FilterOption("- Scale", {bitmap -> ScaleTransformation(0.9).apply(bitmap)}),
-            FilterOption("Mirror V", {bitmap -> imageProcessor.verticalMirror(bitmap)}),
-            FilterOption("Mirror H", {bitmap -> imageProcessor.horizontalMirror(bitmap)}),
-            FilterOption("Translate X", {bitmap -> imageProcessor.translate(bitmap, 1.1)}),
-            FilterOption("Translate Y", {bitmap -> imageProcessor.translate(bitmap,0.0, 1.1)}),
-        )
-
-        filters.forEach { filter ->
-            val button = Button(this)
-            button.text = filter.name
-            button.layoutParams = buttonParams
-
-            button.setOnClickListener{
-                applyFilter(filter.filterFunction)
-            }
-
-            buttonContainer.addView(button)
-        }
-
-        val mainLayout = findViewById<ViewGroup>(R.id.mainLayout)
-        mainLayout.addView(buttonContainer)
-
-    }
 
     private fun addButtonsInGrid() {
         val gridLayout = GridLayout(this)

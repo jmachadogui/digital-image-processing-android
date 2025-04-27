@@ -16,6 +16,23 @@ import java.io.IOException
 class ImageFileManager(private val contentResolver: ContentResolver) {
 
     /**
+     * Deletes the edited version of an image if it exists
+     * @param originalUri URI of the original image
+     * @return true if successfully deleted or no edit existed, false if deletion failed
+     */
+    fun resetImage(editionUri: Uri?): Boolean {
+        editionUri?.let {
+            try {
+                contentResolver.delete(editionUri, null, null) > 0
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return false
+            }
+        }?: false
+        return true
+    }
+
+    /**
      * Creates a new edit copy of an image or returns an existing one
      * @param originalUri URI of the original image
      * @return URI of the edit copy, or null if creation failed
