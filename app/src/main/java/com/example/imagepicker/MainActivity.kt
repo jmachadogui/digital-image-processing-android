@@ -110,8 +110,8 @@ class MainActivity : ComponentActivity() {
         buttonParams.setMargins(16, 8, 16, 8)
 
         val filters = listOf(
-            FilterOption("+ Scale", {bitmap -> imageProcessor.changeScale(bitmap, 1.1)}),
-            FilterOption("- Scale", {bitmap -> imageProcessor.changeScale(bitmap, 0.9)}),
+            FilterOption("+ Scale", {bitmap -> ScaleTransformation(1.1).apply(bitmap)}),
+            FilterOption("- Scale", {bitmap -> ScaleTransformation(0.9).apply(bitmap)}),
             FilterOption("Mirror V", {bitmap -> imageProcessor.verticalMirror(bitmap)}),
             FilterOption("Mirror H", {bitmap -> imageProcessor.horizontalMirror(bitmap)}),
             FilterOption("Translate X", {bitmap -> imageProcessor.translate(bitmap, 1.1)}),
@@ -145,21 +145,21 @@ class MainActivity : ComponentActivity() {
         )
 
         val filters = listOf(
-            FilterOption("+ Scale", {bitmap -> imageProcessor.changeScale(bitmap, 1.1)}),
-            FilterOption("- Scale", {bitmap -> imageProcessor.changeScale(bitmap, 0.9)}),
-            FilterOption("Rotate left", {bitmap -> imageProcessor.rotate(bitmap, -90.0)}),
-            FilterOption("Rotate right", {bitmap -> imageProcessor.rotate(bitmap, 90.0)}),
-            FilterOption("Mirror V", {bitmap -> imageProcessor.verticalMirror(bitmap)}),
-            FilterOption("Mirror H", {bitmap -> imageProcessor.horizontalMirror(bitmap)}),
-            FilterOption("Translate X", {bitmap -> imageProcessor.translate(bitmap, 25.0)}),
-            FilterOption("Translate Y", {bitmap -> imageProcessor.translate(bitmap,0.0, 25.0)}),
-            FilterOption("+ Brightness", {bitmap -> imageProcessor.modifyBrightness(bitmap, 10.0)}),
-            FilterOption("- Brightness", {bitmap -> imageProcessor.modifyBrightness(bitmap, -10.0)}),
-            FilterOption("+ Contrast", {bitmap -> imageProcessor.modifyContrast(bitmap, 1.2f)}),
-            FilterOption("- Contrast", {bitmap -> imageProcessor.modifyContrast(bitmap, 0.8f)}),
-            FilterOption("Grayscale", {bitmap -> imageProcessor.convertToGrayscale(bitmap)}),
-            FilterOption("Low Pass Filter", {bitmap -> imageProcessor.applyLowPassFilter(bitmap)}),
-            FilterOption("High Pass Filter", {bitmap -> imageProcessor.applyGaussianBlur(bitmap)}),
+            FilterOption("+ Scale", {bitmap ->  ScaleTransformation(1.1).apply(bitmap)}),
+            FilterOption("- Scale", {bitmap ->  ScaleTransformation(0.9).apply(bitmap)}),
+            FilterOption("Rotate left", {bitmap ->  RotationTransformation(-90.00).apply(bitmap)}),
+            FilterOption("Rotate right", {bitmap ->  RotationTransformation(90.00).apply(bitmap)}),
+            FilterOption("Mirror V", {bitmap ->  MirrorVTransformation().apply(bitmap)}),
+            FilterOption("Mirror H", {bitmap ->  MirrorHTransformation().apply(bitmap)}),
+            FilterOption("Translate X", {bitmap -> TranslationTransformation(25.0, 0.0).apply(bitmap)}),
+            FilterOption("Translate Y", {bitmap -> TranslationTransformation(0.0, 25.0).apply(bitmap)}),
+            FilterOption("+ Brightness", {bitmap -> BrightnessTransformation(10.0).apply(bitmap) }),
+            FilterOption("- Brightness", {bitmap -> BrightnessTransformation(-10.0).apply(bitmap) }),
+            FilterOption("+ Contrast", {bitmap -> ContrastTransformation(1.1f).apply(bitmap)}),
+            FilterOption("- Contrast", {bitmap -> ContrastTransformation(0.9f).apply(bitmap)}),
+            FilterOption("Grayscale", {bitmap -> GrayscaleTransformation().apply(bitmap)}),
+            FilterOption("Low Pass Filter", {bitmap ->  LowPassFilterTransformation(3).apply(bitmap)}),
+            FilterOption("Gaussian Blur", {bitmap -> GaussianFilterTransformation().apply(bitmap) }),
         )
 
         for(i in filters.indices) {
